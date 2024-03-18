@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crime Reporting System</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+  height: 100%;
+  --s: 300px; /* control the size */
+  --c1: #1d1d1d;
+  --c2: #4e4f51;
+  --c3: #3c3c3c;
+
+  background: repeating-conic-gradient(
+        from 30deg,
+        #0000 0 120deg,
+        var(--c3) 0 180deg
+      )
+      calc(0.5 * var(--s)) calc(0.5 * var(--s) * 0.577),
+    repeating-conic-gradient(
+      from 30deg,
+      var(--c1) 0 60deg,
+      var(--c2) 0 120deg,
+      var(--c3) 0 180deg
+    );
+  background-size: var(--s) calc(var(--s) * 0.577);
+        }
+
+        .card {
+            width: 100%;
+            align-self: center;
+            max-width: 1000px;
+            height: auto;
+            border: none;
+            border-radius: 10px;
+             background: #2cb5a0b5;
+            background-blend-mode: normal, normal, screen, overlay, normal;
+            box-shadow: 0px 0px 10px 1px #000000;
+        }
+
+        form {
+        
+            background-color: transparent;
+            padding: 0px;
+            border-radius: 10px;
+            width: 100%;
+            animation: fadeInUp 0.5s ease forwards;
+            align-self: center;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            color: #cde2ff;
+            font-size: 30px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        input[type="submit"],
+        button.view-all-videos {
+            background-color: #4b7bec;
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+            display: inline-block;
+        }
+
+        input[type="submit"]:hover,
+        button.view-all-videos:hover {
+            background-color: #3867d6;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            color: #4b5563;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .form-input {
+            border: 1px solid #cbd5e0;
+            padding: 10px;
+            border-radius: 5px;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .logout-btn {
+            background-color: #fc5c65;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 16px;
+            display: inline-block;
+            align-self: center;
+        }
+
+        .logout-btn:hover {
+            background-color: #eb3b5a;
+        }
+
+        .submitting-form {
+            animation: fadeOut 0.5s forwards;
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+            }
+        }
+        
+        .submit-btn-wrapper {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body class="container">
+    <div class="container mx-auto card">
+        <div class="flex justify-center items-center">
+            <div class="w-full md:w-1/2 lg:w-1/3">
+                <h2 class="mb-4">Crime Reporting System</h2>
+                <form method="post" enctype="multipart/form-data">
+                    <div class="mb-6">
+                        <label for="nature_crime" class="block">Nature of Crime:</label>
+                        <select class="form-input mt-1" name="nature_crime" required>
+                            <option value="Normal">Normal </option>
+                            <option value="Arson">Arson</option>
+                            <option value="Assault">Assault</option>
+                            <option value="Burglary">Burglary</option>
+                            <option value="Shooting">Shooting</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="risk_percentage" class="block">Risk Percentage:</label>
+                        <input type="number" step="any" class="form-input mt-1" name="risk_percentage" required>
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="latitude" class="block">Latitude:</label>
+                        <input type="number" step="any" class="form-input mt-1" name="latitude" required>
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="longitude" class="block">Longitude:</label>
+                        <input type="number" step="any" class="form-input mt-1" name="longitude" required>
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="video_file" class="block">Video File:</label>
+                        <input type="file" class="form-input mt-1" name="video_file" accept="video/*" required>
+                    </div>
+
+                    <div class="submit-btn-wrapper">
+                        <input type="submit" class="btn btn-primary btn-block" value="Submit">
+                    </div>
+                </form>
+                <a href="{{ url_for('display_multiple_videos') }}"><button class="btn btn-primary btn-block view-all-videos w-full hidden">View All Data</button></a>
+
+            </div>
+        </div>
+    </div>
+    <br>
+    <br>
+    <br>
+
+    <div class="container mx-auto">
+        <div class="flex justify-center items-center">
+            <div class="w-full md:w-1/2 lg:w-1/3 text-center">
+                {% if 'logged_in' in session %}
+                <button class="btn btn-danger logout-btn hidden" onclick="logout()">Logout</button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function handleSubmit(event) {
+            event.preventDefault();
+            document.querySelector('form').classList.add('submitting-form');
+            document.querySelector('.view-all-videos').classList.add('hidden');
+            document.querySelector('.logout-btn').classList.add('hidden');
+            setTimeout(function () {
+                event.target.submit();
+            }, 500);
+        }
+        document.querySelector('form').addEventListener('submit', handleSubmit);
+
+        function logout() {
+            fetch("{{ url_for('logout') }}", {
+                method: "POST",
+                credentials: "same-origin"
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("You have been logged out successfully!");
+                    window.location.href = "{{ url_for('login') }}";
+                } else {
+                    alert("Failed to logout. Please try again.");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("An error occurred. Please try again later.");
+            });
+        }
+    </script>
+</body>
+
+</html>
